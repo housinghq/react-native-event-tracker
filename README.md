@@ -50,4 +50,3 @@ import RNEventTracker from 'react-native-event-tracker';
 // TODO: What to do with the module?
 RNEventTracker;
 ```
-  
