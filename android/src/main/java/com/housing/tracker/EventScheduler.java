@@ -34,28 +34,26 @@ public class EventScheduler {
      * @param message     the event to be queued
      * @param isUnBatched flag for high priority events
      */
-    public static void enqueueAndScheduleEvent(Context context, String message, boolean isUnBatched) {
+    public static void enqueueAndScheduleEvent(Context context, String message, boolean isBatched) {
         int eventQueueSize = EventQueueHelper.enqueueEvent(context, message);
-        if (eventQueueSize == 1) {
-            WorkManager.getInstance().enqueue(buildWorkRequest(false));
-
-        } else if (eventQueueSize >= BATCH_COUNT || isUnBatched) {
+         if (eventQueueSize >= BATCH_COUNT || !isBatched) {
             WorkManager.getInstance().cancelAllWorkByTag(FINAL_WORKER_TAG);
-            WorkManager.getInstance().enqueue(buildWorkRequest(true));
             WorkManager.getInstance().enqueue(buildWorkRequest(false));
+        } else if (eventQueueSize == 1) {
+            WorkManager.getInstance().enqueue(buildWorkRequest(true));
+
         }
     }
 
-    private static OneTimeWorkRequest buildWorkRequest(boolean isBatchedRequest) {
+    private static OneTimeWorkRequest buildWorkRequest(boolean isBatched) {
         OneTimeWorkRequest.Builder workRequestBuilder =
                 new OneTimeWorkRequest.Builder(EventTrackerWorker.class)
                         .setConstraints(getConstraints());
-        if (isBatchedRequest) {
-            workRequestBuilder.addTag(BATCH_WORKER_TAG);
-
-        } else {
+        if (isBatched) {
             workRequestBuilder.setInitialDelay(TIMEOUT, TimeUnit.MILLISECONDS)
                     .addTag(FINAL_WORKER_TAG);
+        } else {
+            workRequestBuilder.addTag(BATCH_WORKER_TAG);
         }
 
         return workRequestBuilder.build();

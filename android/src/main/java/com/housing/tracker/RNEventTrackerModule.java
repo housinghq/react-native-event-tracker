@@ -25,8 +25,8 @@ public class RNEventTrackerModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void sendEvent(String message, boolean isUnBatched) {
-        EventScheduler.enqueueAndScheduleEvent(reactContext, message, isUnBatched);
+    public void sendEvent(String message, boolean isBatched) {
+        EventScheduler.enqueueAndScheduleEvent(reactContext, message, isBatched);
     }
 
 }
