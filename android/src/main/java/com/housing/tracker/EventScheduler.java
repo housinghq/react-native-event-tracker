@@ -13,7 +13,7 @@ import androidx.work.WorkManager;
 public class EventScheduler {
 
     private static final int BATCH_COUNT = 10;                              //10 events
-    private static final int TIMEOUT = 10000;                               //10 mins
+    private static final int TIMEOUT = 4;                               //10 mins
     private static final String FINAL_WORKER_TAG = "final_worker";          //final work request tag
     private static final String BATCH_WORKER_TAG = "batch_worker";          //batch work request tag
 
@@ -32,11 +32,11 @@ public class EventScheduler {
      *
      * @param context
      * @param message     the event to be queued
-     * @param isUnBatched flag for high priority events
+     * @param isBatched flag for high priority events
      */
     public static void enqueueAndScheduleEvent(Context context, String message, boolean isBatched) {
         int eventQueueSize = EventQueueHelper.enqueueEvent(context, message);
-         if (eventQueueSize >= BATCH_COUNT || !isBatched) {
+        if (eventQueueSize >= BATCH_COUNT || !isBatched) {
             WorkManager.getInstance().cancelAllWorkByTag(FINAL_WORKER_TAG);
             WorkManager.getInstance().enqueue(buildWorkRequest(false));
         } else if (eventQueueSize == 1) {
@@ -50,7 +50,7 @@ public class EventScheduler {
                 new OneTimeWorkRequest.Builder(EventTrackerWorker.class)
                         .setConstraints(getConstraints());
         if (isBatched) {
-            workRequestBuilder.setInitialDelay(TIMEOUT, TimeUnit.MILLISECONDS)
+            workRequestBuilder.setInitialDelay(TIMEOUT, TimeUnit.MINUTES)
                     .addTag(FINAL_WORKER_TAG);
         } else {
             workRequestBuilder.addTag(BATCH_WORKER_TAG);

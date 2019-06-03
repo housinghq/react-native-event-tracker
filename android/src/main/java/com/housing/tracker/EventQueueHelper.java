@@ -2,6 +2,7 @@ package com.housing.tracker;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.util.Log;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -30,10 +31,12 @@ public class EventQueueHelper {
 
         SharedPreferences sharedPreferences = getSharedPref(context);
         Set<String> eventQueue = sharedPreferences.getStringSet(PREF_QUEUE, new HashSet<String>());
-        eventQueue.add(event);
+        Set<String> newEventQueue = new HashSet<>(eventQueue);
+        newEventQueue.add(event);
         SharedPreferences.Editor edit = getSharedPref(context).edit();
-        edit.putStringSet(PREF_QUEUE, eventQueue);
-        return eventQueue.size();
+        edit.putStringSet(PREF_QUEUE, newEventQueue);
+        edit.apply();
+        return newEventQueue.size();
     }
 
     /**
@@ -48,6 +51,7 @@ public class EventQueueHelper {
         JSONArray eventArray = createEventsJson(eventQueue);
         SharedPreferences.Editor edit = getSharedPref(context).edit();
         edit.putStringSet(PREF_QUEUE, new HashSet<String>());
+        edit.apply();
         return eventArray;
     }
 

@@ -20,6 +20,18 @@ public class NetworkService {
     private static OkHttpClient okHttpClient = null;
     public static String URL = "http://eventrouter.housing.com/api/v0/publish_event/";
 
+    public static final NetworkService getInstance(){
+        if(null == INSTANCE){
+            INSTANCE = new NetworkService();
+        }
+        return INSTANCE;
+    }
+
+    private NetworkService(){
+
+    }
+
+
     /**
      * Method to build and return an OkHttpClient so we can set/get
      * headers quickly and efficiently.

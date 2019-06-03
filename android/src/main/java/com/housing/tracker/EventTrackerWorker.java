@@ -2,6 +2,7 @@ package com.housing.tracker;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -24,7 +25,7 @@ public class EventTrackerWorker extends Worker {
         JSONArray eventsArray = EventQueueHelper.dequeueEvents(getApplicationContext());
         try {
             JSONObject eventsData = new JSONObject().put("message", eventsArray);
-            NetworkService.INSTANCE.post(NetworkService.URL, eventsData);
+            NetworkService.getInstance().post(NetworkService.URL, eventsData);
 
         } catch (JSONException e) {
             return Result.failure();
