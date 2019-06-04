@@ -21,7 +21,7 @@ public class RNEventTrackerModule extends ReactContextBaseJavaModule {
 
     @ReactMethod
     public void setUrl(String url) {
-        NetworkService.INSTANCE.URL = url;
+        NetworkService.instance.URL = url;
     }
 
     @ReactMethod

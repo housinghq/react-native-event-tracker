@@ -12,25 +12,23 @@ import okhttp3.Response;
 
 public class NetworkService {
 
-    static NetworkService INSTANCE;
-
     private static final long CONNECT_TIMEOUT = 200000;   // 20 seconds
     private static final long READ_TIMEOUT = 200000;      // 20 seconds
     private static final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
-    private static OkHttpClient okHttpClient = null;
     public static String URL = "http://eventrouter.housing.com/api/v0/publish_event/";
+    private static OkHttpClient okHttpClient = null;
+    static NetworkService instance;
 
     public static final NetworkService getInstance(){
-        if(null == INSTANCE){
-            INSTANCE = new NetworkService();
+        if(null == instance){
+            instance = new NetworkService();
         }
-        return INSTANCE;
+        return instance;
     }
 
     private NetworkService(){
 
     }
-
 
     /**
      * Method to build and return an OkHttpClient so we can set/get
